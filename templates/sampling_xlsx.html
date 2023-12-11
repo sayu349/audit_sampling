@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>監査サンプリングツール(xlsx版)</title>
+    <!-- SheetJS xlsxモジュールの読み込み -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- bootstrap5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body class="bg-secondary-subtle">
+    <div class="container bg-white rounded">
+        <div class="m-5 p-5">
+            <div class="row">
+                <div class="col-10">
+                    <h1>監査サンプリングツール（xlsx版）</h1>
+                    <p>xlsxファイルをアップロードしてください</p>
+                </div>
+                <div class="col-2">
+                    <a class="btn btn-primary" href="{{ url_for('sampling_csv_page') }}">csv版に移動する</a>
+                </div>
+            </div>
+            <hr>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">xlsxファイル</label>
+                    <input type="file" class="form-control" id="fileInput" name="fileInput" required>
+                </div>
+                <div class="mb-3">
+                    <label for="sheetNameSelectBox" class="form-label">シート名</label>
+                    <select class="form-control" id="sheetNameSelectBox" name="sheetNameSelectBox" required></select>
+                </div>
+                <div class="mb-3">
+                    <label for="rowNumberInput" class="form-label">行番号</label>
+                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
+                </div>
+                <div class="mb-3">
+                    <label for="columnNameSelectBox" class="form-label">金額列名</label>
+                    <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required></select>
+                </div>
+                <button type="submit" class="btn btn-primary">アップロード</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // 関数脱出後も、変数を保持する
+        var workbook; // グローバル変数としてworkbookを定義
+
+        // ファイル入力要素の変更イベントハンドラ
+        // ファイル入力時に、発火される関数
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            // セレクトボックスを一度空にする処理
+            var selectBox = document.getElementById('sheetNameSelectBox');
+            selectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+
+            // event.target.filesはユーザーが選択したファイルのリスト
+            var file = event.target.files[0]; // 最初のファイルを取得
+            var reader = new FileReader(); // FileReaderのインスタンスを作成
+
+            // ファイルの読み込みが完了した場合の動作
+            reader.onload = function(e) {
+                var data = e.target.result; // 読み込まれたファイルの内容
+
+                // SheetJSを使用してワークブックを読み込み
+                workbook = XLSX.read(data, {type: 'binary'});
+
+                // シート名の取得
+                var sheetNames = workbook.SheetNames; // 全シート名を取得
+
+                // シート名をセレクトボックスに表示
+                var sheetNameSelectBox = document.getElementById('sheetNameSelectBox');
+                // for文でSheetNameを一つずつセレクトボックスに追加する
+                sheetNames.forEach(function(sheetName) {
+                    var option = document.createElement('option'); // オプション要素を作成
+                    option.value = sheetName; // オプションの値を設定
+                    option.textContent = sheetName; // オプションのテキストを設定
+                    sheetNameSelectBox.appendChild(option); // セレクトボックスにオプションを追加
+                });
+            };
+            reader.readAsBinaryString(file); // FileReaderでファイルを読み込む
+        });
+
+        document.getElementById('rowNumberInput').addEventListener('change', function(event) {
+            var inputValue = parseInt(event.target.value) - 1; // 行番号を取得（1始まりを0始まりに変換）
+            if (workbook) {
+                // sheetNameSelectBoxに今入力されている情報を取得する
+                var sheetNameSelectBox = document.getElementById('sheetNameSelectBox');
+                var sheetName = sheetNameSelectBox.options[sheetNameSelectBox.selectedIndex].value;
+                // シート名を指定して、任意のシートの情報を取得する
+                var selectedSheet = workbook.Sheets[sheetName];
+                // 特定の行の要素を取得する（inputValueで行番目を指定）
+                //column_lists = [一列目の要素, 二列目の要素, 三列目の要素, …, n列目の要素]
+                var column_lists = XLSX.utils.sheet_to_json(selectedSheet, {header: 1})[inputValue];
+
+                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
+                columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+
+                // カラム名をセレクトボックスとして表示する
+                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
+                column_lists.forEach(function(column_list) {
+                    var option = document.createElement("option");
+                    option.value = column_list;
+                    option.textContent = column_list;
+                    columnNameSelectBox.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

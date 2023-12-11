@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>監査サンプリングツール(csv版)</title>
+    <!-- SheetJS xlsxモジュールの読み込み -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- bootstrap5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body class="bg-secondary-subtle">
+    <div class="container bg-white rounded">
+        <div class="m-5 p-5">
+            <div class="row">
+                <div class="col-10">
+                    <h1>監査サンプリングツール（csv版）</h1>
+                    <p>csvファイルをアップロードしてください<span class="text-danger">(※:UTF-8のみ対応)</span></p>
+                </div>
+                <div class="col-2">
+                    <a class="btn btn-primary" href="{{ url_for('sampling_xlsx_page') }}">xlsx版に移動する</a>
+                </div>
+            </div>
+            <hr>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">csvファイル</label>
+                    <input type="file" class="form-control" id="fileInput" name="fileInput" required>
+                </div>
+                <div class="mb-3">
+                    <label for="rowNumberInput" class="form-label">行番号</label>
+                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
+                </div>
+                <div class="mb-3">
+                    <label for="columnNameSelectBox" class="form-label">金額列名</label>
+                    <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required></select>
+                </div>
+                <button type="submit" class="btn btn-primary">アップロード</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // csvデータをグローバル変数とする
+        var csvData;
+
+        // csvファイルの読み込み
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                // csvデータ取得
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {type: 'binary'});
+                var sheetName = workbook.SheetNames[0];
+                csvData = workbook.Sheets[sheetName];
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById('rowNumberInput').addEventListener('change', function(event) {
+            var inputValue = parseInt(event.target.value) - 1; // 行番号を取得（1始まりを0始まりに変換）
+            // csv_dataが入力されているときのみ作動
+            if (csvData) {
+                // 任意の行情報取得
+                var headers = XLSX.utils.sheet_to_json(csvData, {header: 1})[inputValue];
+                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
+                columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+
+                // カラム名をセレクトボックスとして表示する
+                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
+                headers.forEach(function(header) {
+                    var option = document.createElement("option");
+                    option.value = header;
+                    option.textContent = header;
+                    columnNameSelectBox.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
