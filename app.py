@@ -36,9 +36,19 @@ def sampling_xlsx_page():
         # 金額列名
         columnNameSelectBox = request.form["columnNameSelectBox"]
         # 関数実行
-        # audit_sampling_xlsx(xlsxファイル, シート名, カラム名, 行番号)
-        sampling_logic.audit_sampling_xlsx(file, sheetNameSelectBox, columnNameSelectBox, rowNumberInput)
-        return send_file(f"{sheetNameSelectBox}サンプル.xlsx")
+        file_stream = sampling_logic.audit_sampling(
+                                                    file= file,
+                                                    sheet_name= sheetNameSelectBox,
+                                                    xlsx_or_csv = "xlsx",
+                                                    amount = columnNameSelectBox,
+                                                    row_number = rowNumberInput
+                                                    )
+        return send_file(
+                        file_stream,
+                        download_name=f'{sheetNameSelectBox}サンプル.xlsx',
+                        as_attachment=True,
+                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        )
     # GET
     else:
         return render_template("sampling_xlsx.html")
@@ -60,9 +70,18 @@ def sampling_csv_page():
         # "xxx.csv" ⇒ "xxx"（.csvを取り除く）
         fileName = fileName.replace(".csv", "")
         # 関数実行
-        # audit_sampling_csv(csvファイル, csvファイル名, カラム名, 行番号)
-        sampling_logic.audit_sampling_csv(file, fileName, columnNameSelectBox, rowNumberInput)
-        return send_file(f"{fileName}サンプル.xlsx")
+        file_stream = sampling_logic.audit_sampling(
+                                                    file= file,
+                                                    xlsx_or_csv = "csv",
+                                                    amount = columnNameSelectBox,
+                                                    row_number = rowNumberInput
+                                                    )
+        return send_file(
+                        file_stream,
+                        download_name=f'{fileName}サンプル.xlsx',
+                        as_attachment=True,
+                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        )
     # GET
     else:
         return render_template("sampling_csv.html")
@@ -72,4 +91,4 @@ def sampling_csv_page():
 # 実行
 # ============================================================
 if __name__== '__main__':
-    app.run(debug=True, host="192.168.0.81", port=80)
+    app.run(debug=True)
