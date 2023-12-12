@@ -10,7 +10,7 @@ from flask import send_file
 # ============================================================
 # 監査サンプリング関数のインポート
 # ============================================================
-import sampling_logic
+from sampling_logic import audit_sampling
 
 
 # ============================================================
@@ -36,13 +36,13 @@ def sampling_xlsx_page():
         # 金額列名
         columnNameSelectBox = request.form["columnNameSelectBox"]
         # 関数実行
-        file_stream = sampling_logic.audit_sampling(
-                                                    file= file,
-                                                    sheet_name= sheetNameSelectBox,
-                                                    xlsx_or_csv = "xlsx",
-                                                    amount_column_name = columnNameSelectBox,
-                                                    row_number = rowNumberInput
-                                                    )
+        file_stream = audit_sampling(
+                                    file= file,
+                                    sheet_name= sheetNameSelectBox,
+                                    xlsx_or_csv = "xlsx",
+                                    amount_column_name = columnNameSelectBox,
+                                    row_number = rowNumberInput
+                                    )
         return send_file(
                         file_stream,
                         download_name=f'{sheetNameSelectBox}サンプル.xlsx',
@@ -70,12 +70,12 @@ def sampling_csv_page():
         # "xxx.csv" ⇒ "xxx"（.csvを取り除く）
         fileName = fileName.replace(".csv", "")
         # 関数実行
-        file_stream = sampling_logic.audit_sampling(
-                                                    file= file,
-                                                    xlsx_or_csv = "csv",
-                                                    amount_column_name = columnNameSelectBox,
-                                                    row_number = rowNumberInput
-                                                    )
+        file_stream = audit_sampling(
+                                    file= file,
+                                    xlsx_or_csv = "csv",
+                                    amount_column_name = columnNameSelectBox,
+                                    row_number = rowNumberInput
+                                    )
         return send_file(
                         file_stream,
                         download_name=f'{fileName}サンプル.xlsx',
