@@ -38,7 +38,7 @@ def sample_poisson(N, pm, ke, alpha, audit_risk, internal_control='依拠しな�
 # =========================================================================
 # 監査サンプリング
 # =========================================================================
-def audit_sampling(xlsx_or_csv, file, amount, row_number, sheet_name=None):
+def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, sheet_name=None):
     if xlsx_or_csv == "xlsx":
         sample_data = pd.read_excel(
                                     file,
@@ -54,10 +54,10 @@ def audit_sampling(xlsx_or_csv, file, amount, row_number, sheet_name=None):
                                 )
 
     # 母集団の金額合計算出
-    print(sample_data[amount])
-    total_amount = sample_data[amount].sum()
+    print(sample_data[amount_column_name])
+    total_amount_column_name = sample_data[amount_column_name].sum()
     # 母集団の金額合計
-    N =  total_amount
+    N =  total_amount_column_name
     # 手続実施上の重要性
     pm = 12155185
     # ランダムシード(サンプリングの並び替えのステータスに利用、任意の数を入力)
@@ -85,7 +85,7 @@ def audit_sampling(xlsx_or_csv, file, amount, row_number, sheet_name=None):
                                 )
 
     # 母集団をまずは降順に並び替える（ここで並び替えるのは、サンプル出力の安定のため安定のため）
-    sample_data = sample_data.sort_values(amount, ascending=False)
+    sample_data = sample_data.sort_values(amount_column_name, ascending=False)
 
     # 母集団をシャッフル
     shuffle_data = sample_data.sample(frac=1, random_state=random_state) #random_stateを使って乱数を固定化する
@@ -94,7 +94,7 @@ def audit_sampling(xlsx_or_csv, file, amount, row_number, sheet_name=None):
     m = N/n
 
     # 列の追加
-    shuffle_data['cumsum'] = shuffle_data[amount].cumsum() # 積み上げ合計
+    shuffle_data['cumsum'] = shuffle_data[amount_column_name].cumsum() # 積み上げ合計
     shuffle_data['group'] = shuffle_data['cumsum']//m # サンプルのグループ化
 
     result_data = shuffle_data.loc[shuffle_data.groupby('group')['cumsum'].idxmin(), ]

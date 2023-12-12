@@ -40,7 +40,7 @@ def sampling_xlsx_page():
                                                     file= file,
                                                     sheet_name= sheetNameSelectBox,
                                                     xlsx_or_csv = "xlsx",
-                                                    amount = columnNameSelectBox,
+                                                    amount_column_name = columnNameSelectBox,
                                                     row_number = rowNumberInput
                                                     )
         return send_file(
@@ -73,7 +73,7 @@ def sampling_csv_page():
         file_stream = sampling_logic.audit_sampling(
                                                     file= file,
                                                     xlsx_or_csv = "csv",
-                                                    amount = columnNameSelectBox,
+                                                    amount_column_name = columnNameSelectBox,
                                                     row_number = rowNumberInput
                                                     )
         return send_file(
