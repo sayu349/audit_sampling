@@ -63,12 +63,11 @@ def sampling_csv_page():
         file = request.files["fileInput"]
         # ファイル名取得
         fileName = file.filename
+        fileName = fileName.replace(".csv", "")
         # 行番号取得
         rowNumberInput = int(request.form["rowNumberInput"])
         # 金額列名取得
         columnNameSelectBox = request.form["columnNameSelectBox"]
-        # "xxx.csv" ⇒ "xxx"（.csvを取り除く）
-        fileName = fileName.replace(".csv", "")
         # 関数実行
         file_stream = audit_sampling(
                                     file= file,

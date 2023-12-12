@@ -53,8 +53,6 @@ def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, sheet_name
                                     thousands=","
                                 )
 
-    # 母集団の金額合計算出
-    print(sample_data[amount_column_name])
     total_amount_column_name = sample_data[amount_column_name].sum()
     # 母集団の金額合計
     N =  total_amount_column_name
