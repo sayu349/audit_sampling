@@ -22,8 +22,13 @@ app = Flask(__name__)
 # ============================================================
 # ルーティング
 # ============================================================
+# home
+@app.route("/")
+def home_page():
+    return render_template("home.html")
+
 # #xlsxファイルの読み込み
-@app.route("/", methods=["POST","GET"])
+@app.route("/sampling_xlsx", methods=["POST","GET"])
 def sampling_xlsx_page():
     # POST
     if request.method == "POST":
@@ -35,13 +40,16 @@ def sampling_xlsx_page():
         rowNumberInput = int(request.form["rowNumberInput"])
         # 金額列名
         columnNameSelectBox = request.form["columnNameSelectBox"]
+        # シード値取得
+        randomState = int(request.form["randomState"])
         # 関数実行
         file_stream = audit_sampling(
                                     file= file,
                                     sheet_name= sheetNameSelectBox,
                                     xlsx_or_csv = "xlsx",
                                     amount_column_name = columnNameSelectBox,
-                                    row_number = rowNumberInput
+                                    row_number = rowNumberInput,
+                                    random_state=randomState
                                     )
         return send_file(
                         file_stream,
@@ -68,12 +76,15 @@ def sampling_csv_page():
         rowNumberInput = int(request.form["rowNumberInput"])
         # 金額列名取得
         columnNameSelectBox = request.form["columnNameSelectBox"]
+        # シード値取得
+        randomState = int(request.form["randomState"])
         # 関数実行
         file_stream = audit_sampling(
                                     file= file,
                                     xlsx_or_csv = "csv",
                                     amount_column_name = columnNameSelectBox,
-                                    row_number = rowNumberInput
+                                    row_number = rowNumberInput,
+                                    random_state= randomState
                                     )
         return send_file(
                         file_stream,
@@ -84,6 +95,10 @@ def sampling_csv_page():
     # GET
     else:
         return render_template("sampling_csv.html")
+
+@app.errorhandler(404) # 404エラーが発生した場合の処理
+def error_404(error):
+    return render_template('404.html')
 
 
 # ============================================================
