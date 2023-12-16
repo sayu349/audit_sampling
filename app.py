@@ -96,8 +96,9 @@ def sampling_csv_page():
     else:
         return render_template("sampling_csv.html")
 
-@app.errorhandler(404) # 404エラーが発生した場合の処理
-def error_404(error):
+# 404エラーが発生した場合の処理
+@app.errorhandler(404)
+def error_404(error): # errorは消さない！
     return render_template('404.html')
 
 

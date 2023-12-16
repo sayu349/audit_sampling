@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+/*
+footerの処理(以下使用場所)
+- home.html
+- sampling_csv.html
+- sampling_xlsx.html
+- 404.html
+*/
+.wrapper{
+    min-height: 100vh; /*最低ライン*/
+    position: relative;/*←相対位置*/
+    padding-bottom: 170px;/*pb調整してfooterの表示領域確保(ココがミソ！)*/
+    box-sizing: border-box;/*←全て含めてmin-height:100vhに*/
+}
+
+footer{
+    width: 100%;
+    position: absolute;/*←絶対位置*/
+    bottom: 0; /*下に固定*/
+}
