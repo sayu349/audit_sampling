@@ -50,7 +50,7 @@
                 <form method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="fileInput" class="form-label">csvファイル</label>
-                        <input type="file" class="form-control" id="fileInput" name="fileInput" required>
+                        <input type="file" class="form-control" id="fileInput" name="fileInput" accept=".csv" required>
                     </div>
                     <div class="mb-3">
                         <label for="sheetNameSelectBox" class="form-label">シート名</label>
@@ -93,7 +93,7 @@
                 <div class="col-md">
                     <!-- 調整のための空カラム -->
                 </div>
-                <div class="row">
+                <div>
                     <div class="col-md">
                         <p>&copy; 2023 Ontology Inc.</p>
                     </div>
@@ -135,6 +135,15 @@
                 csvData = workbook.Sheets[sheetName];
             };
             reader.readAsText(file);
+
+            // 行番号に0を入れる
+            rowNumberInput = document.getElementById('rowNumberInput')
+            rowNumberInput.value = 0;
+
+            // 金額列名のリセット
+            var columnNameSelectBox = document.getElementById('columnNameSelectBox');
+            columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+            columnNameSelectBox.innerHTML = '<option value="#">金額列名を選択してください</option>'
         });
 
         document.getElementById('rowNumberInput').addEventListener('change', function(event) {

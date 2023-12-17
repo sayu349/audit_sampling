@@ -50,7 +50,7 @@
                 <form method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="fileInput" class="form-label">xlsxファイル</label>
-                        <input type="file" class="form-control" id="fileInput" name="fileInput" required>
+                        <input type="file" class="form-control" id="fileInput" name="fileInput" accept=".xlsx" required>
                     </div>
                     <div class="mb-3">
                         <label for="sheetNameSelectBox" class="form-label">シート名</label>
@@ -93,7 +93,7 @@
                 <div class="col-md">
                     <!-- 調整のための空カラム -->
                 </div>
-                <div class="row">
+                <div>
                     <div class="col-md">
                         <p>&copy; 2023 Ontology Inc.</p>
                     </div>
@@ -125,6 +125,7 @@
 
         // ファイル入力要素の変更イベントハンドラ
         // ファイル入力時に、発火される関数
+        // シート名取得 script
         document.getElementById('fileInput').addEventListener('change', function(event) {
             // セレクトボックスを一度空にする処理
             var selectBox = document.getElementById('sheetNameSelectBox');
@@ -152,11 +153,21 @@
                     option.value = sheetName; // オプションの値を設定
                     option.textContent = sheetName; // オプションのテキストを設定
                     sheetNameSelectBox.appendChild(option); // セレクトボックスにオプションを追加
+
+                // 行番号に0を入れる
+                rowNumberInput = document.getElementById('rowNumberInput')
+                rowNumberInput.value = 0;
+
+                // 金額列名のリセット
+                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
+                columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+                columnNameSelectBox.innerHTML = '<option value="#">金額列名を選択してください</option>'
                 });
             };
             reader.readAsBinaryString(file); // FileReaderでファイルを読み込む
         });
 
+        // 金額列名取得 script
         document.getElementById('rowNumberInput').addEventListener('change', function(event) {
             var inputValue = parseInt(event.target.value) - 1; // 行番号を取得（1始まりを0始まりに変換）
             if (workbook) {
