@@ -42,6 +42,12 @@ def sampling_xlsx_page():
         columnNameSelectBox = request.form["columnNameSelectBox"]
         # シード値取得
         randomState = int(request.form["randomState"])
+        # 許容逸脱金額・手続実施上の重要性
+        pm = int(request.form["pm"])
+        # 監査リスク
+        auditRisk = request.form["auditRisk"]
+        # 内部統制
+        internalControl = request.form["internalControl"]
         # 関数実行
         file_stream = audit_sampling(
                                     file= file,
@@ -49,7 +55,10 @@ def sampling_xlsx_page():
                                     xlsx_or_csv = "xlsx",
                                     amount_column_name = columnNameSelectBox,
                                     row_number = rowNumberInput,
-                                    random_state=randomState
+                                    random_state=randomState,
+                                    pm = pm,
+                                    audit_risk = auditRisk,
+                                    internal_control= internalControl
                                     )
         return send_file(
                         file_stream,
@@ -78,13 +87,22 @@ def sampling_csv_page():
         columnNameSelectBox = request.form["columnNameSelectBox"]
         # シード値取得
         randomState = int(request.form["randomState"])
+        # 許容逸脱金額・手続実施上の重要性
+        pm = int(request.form["pm"])
+        # 監査リスク
+        auditRisk = request.form["auditRisk"]
+        # 内部統制
+        internalControl = request.form["internalControl"]
         # 関数実行
         file_stream = audit_sampling(
                                     file= file,
                                     xlsx_or_csv = "csv",
                                     amount_column_name = columnNameSelectBox,
                                     row_number = rowNumberInput,
-                                    random_state= randomState
+                                    random_state= randomState,
+                                    pm = pm,
+                                    audit_risk = auditRisk,
+                                    internal_control= internalControl
                                     )
         return send_file(
                         file_stream,
@@ -105,5 +123,10 @@ def error_404(error): # errorは消さない！
 # ============================================================
 # 実行
 # ============================================================
+"""
 if __name__== '__main__':
     app.run(debug=True, host="192.168.0.81", port=80)
+"""
+
+if __name__== '__main__':
+    app.run(debug=True)

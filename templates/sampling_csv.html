@@ -37,6 +37,7 @@
         </div>
     </nav>
     <div class="container bg-white p-5 my-5 rounded">
+        <div class="mb-5 border-bottom">
             <div class="row">
                 <div class="col-9">
                     <h1>監査サンプリングツール（csv版）</h1>
@@ -45,36 +46,61 @@
                 <div class="col-3">
                     <a class="btn btn-primary" href="{{ url_for('sampling_xlsx_page') }}">xlsx版に移動する</a>
                 </div>
-            <hr>
-            <div class="col">
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="fileInput" class="form-label">csvファイル</label>
-                        <input type="file" class="form-control" id="fileInput" name="fileInput" accept=".csv" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sheetNameSelectBox" class="form-label">シート名</label>
-                        <select class="form-control" id="sheetNameSelectBox" name="sheetNameSelectBox" disabled>
-                            <option value="#">csvファイルには、シート名が存在しません</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="rowNumberInput" class="form-label">行番号</label>
-                        <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="columnNameSelectBox" class="form-label">金額列名</label>
-                        <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required>
-                            <option value="#">行番号を指定して、金額列名を選択してください</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="randomState" class="form-label">シード値</label>
-                        <input type="number" class="form-control" id="randomState" name="randomState" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">アップロード</button>
-                </form>
             </div>
+        </div>
+        <div class="col">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3 border-bottom">
+                    <h3>ファイルアップロード</h3>
+                </div>
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">csvファイル</label>
+                    <input type="file" class="form-control" id="fileInput" name="fileInput" accept=".csv" required>
+                </div>
+                <div class="mb-3">
+                    <label for="sheetNameSelectBox" class="form-label">シート名</label>
+                    <select class="form-control" id="sheetNameSelectBox" name="sheetNameSelectBox" disabled>
+                        <option value="#">csvファイルには、シート名が存在しません</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="rowNumberInput" class="form-label">行番号</label>
+                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
+                </div>
+                <div class="mb-5">
+                    <label for="columnNameSelectBox" class="form-label">金額列名</label>
+                    <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required>
+                        <option value="#">行番号を指定して、金額列名を選択してください</option>
+                    </select>
+                </div>
+                <div class="mb-3 border-bottom">
+                    <h3>サンプリング設定</h3>
+                </div>
+                <div class="mb-3">
+                    <label for="randomState" class="form-label">シード値</label>
+                    <input type="number" class="form-control" id="randomState" name="randomState" placeholder="シード値を入力してください" required>
+                </div>
+                <div class="mb-3">
+                    <label for="pm" class="form-label">許容逸脱金額・手続実施上の重要性</label>
+                    <input type="number" class="form-control" id="pm" name="pm" placeholder="金額を入力してください" required>
+                </div>
+                <div class="mb-3">
+                    <label for="auditRisk" class="form-label">監査リスク</label>
+                    <select class="form-control" id="auditRisk" name="auditRisk" required>
+                        <option value="SR">SR</option>
+                        <option value="RMM-L">RMM-L</option>
+                        <option value="RMM-H">RMM-H</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="internalControl" class="form-label">内部統制</label>
+                    <select class="form-control" id="internalControl" name="internalControl" required>
+                        <option value="依拠する">依拠する</option>
+                        <option value="依拠しない">依拠しない</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">アップロード</button>
+            </form>
         </div>
     </div>
     <footer class="text-white bg-dark text-center p-4">

@@ -38,7 +38,8 @@ def sample_poisson(N, pm, ke, alpha, audit_risk, internal_control='依拠しな�
 # =========================================================================
 # 監査サンプリング
 # =========================================================================
-def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, random_state, sheet_name=None):
+def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, random_state,
+                    pm, audit_risk, internal_control, sheet_name=None):
     if xlsx_or_csv == "xlsx":
         sample_data = pd.read_excel(
                                     file,
@@ -57,13 +58,13 @@ def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, random_sta
     # 母集団の金額合計
     N =  total_amount_column_name
     # 手続実施上の重要性
-    pm = 12155185
+    # pm = 12155185
     # ランダムシード(サンプリングの並び替えのステータスに利用、任意の数を入力)
     # random_state = 2
     # 監査リスク
-    audit_risk = 'RMM-L'
+    # audit_risk = 'RMM-L'
     # 内部統制
-    internal_control = '依拠しない'
+    # internal_control = '依拠しない'
     # 予想虚偽表示金額（変更不要）
     ke = 0
     alpha = 0.05
