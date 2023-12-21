@@ -22,12 +22,12 @@ app = Flask(__name__)
 # ============================================================
 # ルーティング
 # ============================================================
-# home
+# ホーム
 @app.route("/")
 def home_page():
     return render_template("home.html")
 
-# #xlsxファイルの読み込み
+# #xlsxの読み込み
 @app.route("/sampling_xlsx", methods=["POST","GET"])
 def sampling_xlsx_page():
     # POST
@@ -48,24 +48,27 @@ def sampling_xlsx_page():
         auditRisk = request.form["auditRisk"]
         # 内部統制
         internalControl = request.form["internalControl"]
-        # 関数実行
-        file_stream = audit_sampling(
-                                    file= file,
-                                    sheet_name= sheetNameSelectBox,
-                                    xlsx_or_csv = "xlsx",
-                                    amount_column_name = columnNameSelectBox,
-                                    row_number = rowNumberInput,
-                                    random_state=randomState,
-                                    pm = pm,
-                                    audit_risk = auditRisk,
-                                    internal_control= internalControl
-                                    )
-        return send_file(
-                        file_stream,
-                        download_name=f'{sheetNameSelectBox}サンプル.xlsx',
-                        as_attachment=True,
-                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                        )
+        try:
+            # 関数実行
+            file_stream = audit_sampling(
+                                        file= file,
+                                        sheet_name= sheetNameSelectBox,
+                                        xlsx_or_csv = "xlsx",
+                                        amount_column_name = columnNameSelectBox,
+                                        row_number = rowNumberInput,
+                                        random_state=randomState,
+                                        pm = pm,
+                                        audit_risk = auditRisk,
+                                        internal_control= internalControl
+                                        )
+            return send_file(
+                            file_stream,
+                            download_name=f'{sheetNameSelectBox}サンプル.xlsx',
+                            as_attachment=True,
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+        except:
+            return render_template("error.html", xlsx_or_csv ="xlsx")
     # GET
     else:
         return render_template("sampling_xlsx.html")
@@ -93,28 +96,37 @@ def sampling_csv_page():
         auditRisk = request.form["auditRisk"]
         # 内部統制
         internalControl = request.form["internalControl"]
-        # 関数実行
-        file_stream = audit_sampling(
-                                    file= file,
-                                    xlsx_or_csv = "csv",
-                                    amount_column_name = columnNameSelectBox,
-                                    row_number = rowNumberInput,
-                                    random_state= randomState,
-                                    pm = pm,
-                                    audit_risk = auditRisk,
-                                    internal_control= internalControl
-                                    )
-        return send_file(
-                        file_stream,
-                        download_name=f'{fileName}サンプル.xlsx',
-                        as_attachment=True,
-                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                        )
+        try:
+            # 関数実行
+            file_stream = audit_sampling(
+                                        file= file,
+                                        xlsx_or_csv = "csv",
+                                        amount_column_name = columnNameSelectBox,
+                                        row_number = rowNumberInput,
+                                        random_state= randomState,
+                                        pm = pm,
+                                        audit_risk = auditRisk,
+                                        internal_control= internalControl
+                                        )
+            return send_file(
+                            file_stream,
+                            download_name=f'{fileName}サンプル.xlsx',
+                            as_attachment=True,
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+        except:
+            return render_template("error.html", xlsx_or_csv ="csv")
     # GET
     else:
         return render_template("sampling_csv.html")
 
-# 404エラーが発生した場合の処理
+# サンプリングエラー
+@app.route("/sampling_error")
+def sampling_error_page():
+    return render_template("error.html")
+
+
+# 404エラー
 @app.errorhandler(404)
 def error_404(error): # errorは消さない！
     return render_template('404.html')
