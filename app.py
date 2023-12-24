@@ -61,6 +61,7 @@ def sampling_xlsx_page():
                                         audit_risk = auditRisk,
                                         internal_control= internalControl
                                         )
+            # 成功した場合
             return send_file(
                             file_stream,
                             download_name=f'{sheetNameSelectBox}サンプル.xlsx',
@@ -68,11 +69,11 @@ def sampling_xlsx_page():
                             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                             )
         except:
+            # 失敗した場合
             return render_template("error.html", xlsx_or_csv ="xlsx")
     # GET
     else:
         return render_template("sampling_xlsx.html")
-
 
 # csvの読み込み
 @app.route("/sampling_csv", methods=["POST","GET"])
@@ -108,6 +109,7 @@ def sampling_csv_page():
                                         audit_risk = auditRisk,
                                         internal_control= internalControl
                                         )
+            # 成功した場合
             return send_file(
                             file_stream,
                             download_name=f'{fileName}サンプル.xlsx',
@@ -115,6 +117,7 @@ def sampling_csv_page():
                             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                             )
         except:
+            # 失敗した場合
             return render_template("error.html", xlsx_or_csv ="csv")
     # GET
     else:
@@ -125,12 +128,15 @@ def sampling_csv_page():
 def sampling_error_page():
     return render_template("error.html")
 
-
 # 404エラー
 @app.errorhandler(404)
 def error_404(error): # errorは消さない！
     return render_template('404.html')
 
+# test
+@app.route("/home_copy")
+def home_test_page():
+    return render_template("home_copy.html")
 
 # ============================================================
 # 実行

@@ -1,6 +1,18 @@
 @charset "UTF-8";
 
 /*
+カルーセルの画像に黒色をオーバーレイする
+- home_copy.html
+*/
+.carousel-item {
+    background: #000;
+}
+.carousel-item img {
+    display: block;
+    opacity: 0.4;
+}
+
+/*
 footerの処理(以下使用場所)
 - home.html
 - sampling_csv.html
