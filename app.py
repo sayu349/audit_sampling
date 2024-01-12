@@ -133,10 +133,7 @@ def sampling_error_page():
 def error_404(error): # errorは消さない！
     return render_template('404.html')
 
-# test
-@app.route("/home_copy")
-def home_test_page():
-    return render_template("home_copy.html")
+
 
 # ============================================================
 # 実行
