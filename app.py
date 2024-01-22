@@ -5,6 +5,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import send_file
+# ============================================================
 
 
 # ============================================================
@@ -97,28 +98,28 @@ def sampling_csv_page():
         auditRisk = request.form["auditRisk"]
         # 内部統制
         internalControl = request.form["internalControl"]
-        try:
-            # 関数実行
-            file_stream = audit_sampling(
-                                        file= file,
-                                        xlsx_or_csv = "csv",
-                                        amount_column_name = columnNameSelectBox,
-                                        row_number = rowNumberInput,
-                                        random_state= randomState,
-                                        pm = pm,
-                                        audit_risk = auditRisk,
-                                        internal_control= internalControl
-                                        )
-            # 成功した場合
-            return send_file(
-                            file_stream,
-                            download_name=f'{fileName}サンプル.xlsx',
-                            as_attachment=True,
-                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                            )
-        except:
+        #try:
+        # 関数実行
+        file_stream = audit_sampling(
+                                    file= file,
+                                    xlsx_or_csv = "csv",
+                                    amount_column_name = columnNameSelectBox,
+                                    row_number = rowNumberInput,
+                                    random_state= randomState,
+                                    pm = pm,
+                                    audit_risk = auditRisk,
+                                    internal_control= internalControl
+                                    )
+        # 成功した場合
+        return send_file(
+                        file_stream,
+                        download_name=f'{fileName}サンプル.xlsx',
+                        as_attachment=True,
+                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        )
+        #except:
             # 失敗した場合
-            return render_template("error.html", xlsx_or_csv ="csv")
+            #return render_template("error.html", xlsx_or_csv ="csv")
     # GET
     else:
         return render_template("sampling_csv.html")
