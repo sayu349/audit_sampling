@@ -70,9 +70,9 @@
                     <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
                 </div>
                 <div class="mb-5">
-                    <label for="columnNameSelectBox" class="form-label">金額単位サンプリングを用いる列</label>
+                    <label for="columnNameSelectBox" class="form-label">金額単位サンプリングに用いる列</label>
                     <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required>
-                        <option value="#">ヘッダー行を指定して、金額単位サンプリングを用いる列を選択してください</option>
+                        <option value="#">ヘッダー行を指定して、金額単位サンプリングに用いる列を選択してください</option>
                     </select>
                 </div>
                 <div class="mb-3 border-bottom">
@@ -168,10 +168,10 @@
             rowNumberInput = document.getElementById('rowNumberInput')
             rowNumberInput.value = 0;
 
-            // 金額単位サンプリングを用いる列のリセット
+            // 金額単位サンプリングに用いる列のリセット
             var columnNameSelectBox = document.getElementById('columnNameSelectBox');
             columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
-            columnNameSelectBox.innerHTML = '<option value="#">ヘッダー行を指定して、金額単位サンプリングを用いる列を選択してください</option>'
+            columnNameSelectBox.innerHTML = '<option value="#">ヘッダー行を指定して、金額単位サンプリングに用いる列を選択してください</option>'
         });
 
         document.getElementById('rowNumberInput').addEventListener('change', function(event) {
