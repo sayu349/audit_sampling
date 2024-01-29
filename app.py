@@ -33,17 +33,17 @@ def home_page():
 def sampling_xlsx_page():
     # POST
     if request.method == "POST":
-        # xlsxファイル取得
+        # xlsxファイル
         file = request.files["fileInput"]
-        # シート名取得
+        # シート名
         sheetNameSelectBox = request.form["sheetNameSelectBox"]
-        # 行番号
+        # ヘッダー行
         rowNumberInput = int(request.form["rowNumberInput"])
-        # 金額列名
+        # 金額単位サンプリングを用いる列
         columnNameSelectBox = request.form["columnNameSelectBox"]
-        # シード値取得
+        # シード値
         randomState = int(request.form["randomState"])
-        # 許容逸脱金額・手続実施上の重要性
+        # 手続実施上の重要性
         pm = int(request.form["pm"])
         # 監査リスク
         auditRisk = request.form["auditRisk"]
@@ -81,45 +81,45 @@ def sampling_xlsx_page():
 def sampling_csv_page():
     # POST
     if request.method == "POST":
-        # csvファイル取得
+        # csvファイル
         file = request.files["fileInput"]
-        # ファイル名取得
+        # ファイル名
         fileName = file.filename
         fileName = fileName.replace(".csv", "")
-        # 行番号取得
+        # ヘッダー行
         rowNumberInput = int(request.form["rowNumberInput"])
-        # 金額列名取得
+        # 金額単位サンプリングを用いる列
         columnNameSelectBox = request.form["columnNameSelectBox"]
-        # シード値取得
+        # シード値
         randomState = int(request.form["randomState"])
-        # 許容逸脱金額・手続実施上の重要性
+        # 手続実施上の重要性
         pm = int(request.form["pm"])
         # 監査リスク
         auditRisk = request.form["auditRisk"]
         # 内部統制
         internalControl = request.form["internalControl"]
-        #try:
-        # 関数実行
-        file_stream = audit_sampling(
-                                    file= file,
-                                    xlsx_or_csv = "csv",
-                                    amount_column_name = columnNameSelectBox,
-                                    row_number = rowNumberInput,
-                                    random_state= randomState,
-                                    pm = pm,
-                                    audit_risk = auditRisk,
-                                    internal_control= internalControl
-                                    )
-        # 成功した場合
-        return send_file(
-                        file_stream,
-                        download_name=f'{fileName}サンプル.xlsx',
-                        as_attachment=True,
-                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                        )
-        #except:
+        try:
+            # 関数実行
+            file_stream = audit_sampling(
+                                        file= file,
+                                        xlsx_or_csv = "csv",
+                                        amount_column_name = columnNameSelectBox,
+                                        row_number = rowNumberInput,
+                                        random_state= randomState,
+                                        pm = pm,
+                                        audit_risk = auditRisk,
+                                        internal_control= internalControl
+                                        )
+            # 成功した場合
+            return send_file(
+                            file_stream,
+                            download_name=f'{fileName}サンプル.xlsx',
+                            as_attachment=True,
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+        except:
             # 失敗した場合
-            #return render_template("error.html", xlsx_or_csv ="csv")
+            return render_template("error.html", xlsx_or_csv ="csv")
     # GET
     else:
         return render_template("sampling_csv.html")

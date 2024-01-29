@@ -66,13 +66,13 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="rowNumberInput" class="form-label">行番号</label>
+                    <label for="rowNumberInput" class="form-label">ヘッダー行</label>
                     <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
                 </div>
                 <div class="mb-5">
-                    <label for="columnNameSelectBox" class="form-label">金額列名</label>
+                    <label for="columnNameSelectBox" class="form-label">金額単位サンプリングを用いる列</label>
                     <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required>
-                        <option value="#">行番号を指定して、金額列名を選択してください</option>
+                        <option value="#">ヘッダー行を指定して、金額単位サンプリングを用いる列を選択してください</option>
                     </select>
                 </div>
                 <div class="mb-3 border-bottom">
@@ -83,7 +83,7 @@
                     <input type="number" class="form-control" id="randomState" name="randomState" placeholder="シード値を入力してください" required>
                 </div>
                 <div class="mb-3">
-                    <label for="pm" class="form-label">許容逸脱金額・手続実施上の重要性</label>
+                    <label for="pm" class="form-label">手続実施上の重要性</label>
                     <input type="number" class="form-control" id="pm" name="pm" placeholder="金額を入力してください" required>
                 </div>
                 <div class="mb-3">
@@ -182,22 +182,22 @@
                     option.textContent = sheetName; // オプションのテキストを設定
                     sheetNameSelectBox.appendChild(option); // セレクトボックスにオプションを追加
 
-                // 行番号に0を入れる
+                // ヘッダー行に0を入れる
                 rowNumberInput = document.getElementById('rowNumberInput')
                 rowNumberInput.value = 0;
 
-                // 金額列名のリセット
+                // 金額単位サンプリングを用いる列のリセット
                 var columnNameSelectBox = document.getElementById('columnNameSelectBox');
                 columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
-                columnNameSelectBox.innerHTML = '<option value="#">行番号を指定して、金額列名を選択してください</option>'
+                columnNameSelectBox.innerHTML = '<option value="#">ヘッダー行を指定して、金額単位サンプリングを用いる列を選択してください</option>'
                 });
             };
             reader.readAsBinaryString(file); // FileReaderでファイルを読み込む
         });
 
-        // 金額列名取得 script
+        // 金額単位サンプリングを用いる列取得 script
         document.getElementById('rowNumberInput').addEventListener('change', function(event) {
-            var inputValue = parseInt(event.target.value) - 1; // 行番号を取得（1始まりを0始まりに変換）
+            var inputValue = parseInt(event.target.value) - 1; // ヘッダー行を取得（1始まりを0始まりに変換）
             if (workbook) {
                 // sheetNameSelectBoxに今入力されている情報を取得する
                 var sheetNameSelectBox = document.getElementById('sheetNameSelectBox');
