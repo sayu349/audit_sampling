@@ -28,7 +28,50 @@ app = Flask(__name__)
 def home_page():
     return render_template("home.html")
 
-# #xlsxの読み込み
+
+# ============================================================
+# 属性サンプリング・xlsx版
+# ============================================================
+@app.route("/attribute_sampling_xlsx")
+def attribute_sampling_xlsx_page():
+    # POST
+    if request.method == "POST":
+        # xlsxファイル
+        file = request.files["fileInput"]
+        # シート名
+        sheetNameSelectBox = request.form["sheetNameSelectBox"]
+        # ヘッダー行
+        rowNumberInput = int(request.form["rowNumberInput"])
+        # シード値
+        randomState = int(request.form["randomState"])
+        # 許容逸脱率の上限
+        pt = int(request.form["pt"])
+        # 予想逸脱金額と優位水準が任意してされた場合
+        if "ke" in request.form and "alpha" in request.form:
+            ke = float(request.form["ke"])
+            alpha = float(request.form["alpha"])
+        # デフォルトの予想逸脱金額と優位水準を使う
+        else:
+            ke = 0
+            alpha = 0.05
+        # 属性サンプリング関数実行
+        file_stream = attribute_sampling(
+                                        file = file,
+                                        sheet_name = sheetNameSelectBox,
+                                        xlsx_or_csv ="xlsx",
+                                        row_number = rowNumberInput,
+                                        random_state = randomState,
+                                        pt = pt,
+                                        ke = ke,
+                                        alpha = alpha)
+    # GET
+    else:
+        return render_template("attribute_sampling_xlsx.html")
+
+
+# ============================================================
+# 金額単位サンプリング・xlsxの読み込み
+# ============================================================
 @app.route("/sampling_xlsx", methods=["POST","GET"])
 def sampling_xlsx_page():
     # POST
@@ -49,8 +92,18 @@ def sampling_xlsx_page():
         auditRisk = request.form["auditRisk"]
         # 内部統制
         internalControl = request.form["internalControl"]
+
+        # 予想逸脱金額と優位水準が任意してされた場合
+        if "ke" in request.form and "alpha" in request.form:
+            ke = int(request.form["ke"])
+            alpha = float(request.form["alpha"])
+        # デフォルトの予想逸脱金額と優位水準を使う
+        else:
+            ke = 0
+            alpha = 0.05
+
         try:
-            # 関数実行
+            # 属性サンプリング関数実行
             file_stream = audit_sampling(
                                         file= file,
                                         sheet_name= sheetNameSelectBox,
@@ -60,6 +113,8 @@ def sampling_xlsx_page():
                                         random_state=randomState,
                                         pm = pm,
                                         audit_risk = auditRisk,
+                                        ke = ke,
+                                        alpha = alpha,
                                         internal_control= internalControl
                                         )
             # 成功した場合
@@ -76,7 +131,10 @@ def sampling_xlsx_page():
     else:
         return render_template("sampling_xlsx.html")
 
-# csvの読み込み
+
+# ============================================================
+# 金額単位サンプリング・csvの読み込み
+# ============================================================
 @app.route("/sampling_csv", methods=["POST","GET"])
 def sampling_csv_page():
     # POST
@@ -98,8 +156,16 @@ def sampling_csv_page():
         auditRisk = request.form["auditRisk"]
         # 内部統制
         internalControl = request.form["internalControl"]
+        # 予想逸脱金額と優位水準が任意してされた場合
+        if "ke" in request.form and "alpha" in request.form:
+            ke = int(request.form["ke"])
+            alpha = float(request.form["alpha"])
+        # デフォルトの予想逸脱金額と優位水準を使う
+        else:
+            ke = 0
+            alpha = 0.05
         try:
-            # 関数実行
+            # 属性サンプリング関数実行
             file_stream = audit_sampling(
                                         file= file,
                                         xlsx_or_csv = "csv",
@@ -108,6 +174,8 @@ def sampling_csv_page():
                                         random_state= randomState,
                                         pm = pm,
                                         audit_risk = auditRisk,
+                                        ke = ke,
+                                        alpha = alpha,
                                         internal_control= internalControl
                                         )
             # 成功した場合
@@ -124,7 +192,10 @@ def sampling_csv_page():
     else:
         return render_template("sampling_csv.html")
 
-# サンプリングエラー
+# ============================================================
+# エラーハンドリング
+# ============================================================
+# サンプリング中におけるエラー
 @app.route("/sampling_error")
 def sampling_error_page():
     return render_template("error.html")

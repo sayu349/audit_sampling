@@ -5,6 +5,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import poisson
+from scipy.stats import binom
 import math
 
 # 一時ファイル作成に必要なライブラリ
@@ -12,7 +13,73 @@ import io
 
 
 # =========================================================================
+# 二項分布におけるサンプル数算定関数の作成
+# （属性サンプリングにおけるサンプル件数nの計算）
+# =========================================================================
+def sample_binom(pt, alpha, ke):
+    k = np.arange(10)
+    n = 1
+    while True:
+        bin_cdf = binom.cdf(k, n, pt)
+        if bin_cdf[ke] < alpha:
+            break
+        n += 1
+    return n
+
+
+# =========================================================================
+# 属性サンプリング結果出力
+# =========================================================================
+def attribute_sampling(xlsx_or_csv, file, row_number, random_state,
+                        pt, ke, alpha, sheet_name=None):
+    if xlsx_or_csv == "xlsx":
+        sample_data = pd.read_excel(
+                                    file,
+                                    sheet_name=sheet_name,
+                                    header=row_number-1
+                                    )
+    else:
+        sample_data = pd.read_csv(
+                                    file,
+                                    encoding="UTF-8",
+                                    header=row_number-1,
+                                    thousands=","
+                                )
+
+    n = sample_binom(pt, ke, alpha)
+    # サンプリングシートに記載用の、パラメータ一覧
+    sampling_param = pd.DataFrame(
+                                    [
+                                        ['許容逸脱率の上限', pt],
+                                        ['random_state', random_state],
+                                        ['優位水準',alpha]
+                                    ]
+                                )
+
+    # sample_dataからrandom_stateを用いて、ランダムにn件の行を選択
+    result_data = sample_data.sample(n=n, random_state=random_state).reset_index(drop=True)
+
+    # メモリ内のバイトストリームにExcelファイルを作成する
+    file_stream = io.BytesIO()
+    # result_data.to_excel(file_name, encoding="shift_jis", index=False)
+    writer = pd.ExcelWriter(file_stream)
+    # 全レコードを'全体'シートに出力
+    sample_data.to_excel(writer, sheet_name = '母集団', index=False)
+    # サンプリング結果を、サンプリングシートに記載
+    result_data.to_excel(writer, sheet_name = 'サンプリング結果', index=False)
+    # サンプリングの情報追記
+    sampling_param.to_excel(writer, sheet_name = 'サンプリングパラメータ', index=False, header=None)
+    # Excelファイルを保存して閉じる
+    writer.close()
+
+    # バイトストリームをリセット
+    file_stream.seek(0)
+    #output
+    return file_stream
+
+# =========================================================================
 # ポアソン分布による金額単位サンプリングによるサンプル数算定の関数
+# （金額単位サンプリングにおけるサンプル件数nの計算）
 # =========================================================================
 def sample_poisson(N, pm, ke, alpha, audit_risk, internal_control='依拠しない'):
     k = np.arange(ke+1)
@@ -36,10 +103,10 @@ def sample_poisson(N, pm, ke, alpha, audit_risk, internal_control='依拠しな�
 
 
 # =========================================================================
-# 監査サンプリング
+# 金額単位監査サンプリング結果出力
 # =========================================================================
 def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, random_state,
-                    pm, audit_risk, internal_control, sheet_name=None):
+                    pm, audit_risk, internal_control,ke, alpha, sheet_name=None):
     if xlsx_or_csv == "xlsx":
         sample_data = pd.read_excel(
                                     file,
@@ -66,8 +133,8 @@ def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, random_sta
     # 内部統制
     # internal_control = '依拠しない'
     # 予想虚偽表示金額（変更不要）
-    ke = 0
-    alpha = 0.05
+    # ke = 0
+    # alpha = 0.05
 
     # サンプルサイズnの算定
     n = sample_poisson(N, pm, ke, alpha, audit_risk, internal_control)
@@ -79,7 +146,8 @@ def audit_sampling(xlsx_or_csv, file, amount_column_name, row_number, random_sta
                                         ['手続実施上の重要性', pm],
                                         ['リスク', audit_risk],
                                         ['内部統制', internal_control],
-                                        ['random_state', random_state]
+                                        ['random_state', random_state],
+                                        ['優位水準',alpha]
                                     ]
                                 )
 

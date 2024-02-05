@@ -42,7 +42,7 @@
         <div class="mb-5 border-bottom">
             <div class="row">
                 <div class="col-9">
-                    <h1>監査サンプリングツール（csv版）</h1>
+                    <h1>金額単位サンプリング（csv版）</h1>
                     <p>csvファイルをアップロードしてください<span class="text-danger">(※:UTF-8のみ対応)</span></p>
                 </div>
                 <div class="col-3">
@@ -83,7 +83,9 @@
                     <input type="number" class="form-control" id="randomState" name="randomState" placeholder="シード値を入力してください" required>
                 </div>
                 <div class="mb-3">
-                    <label for="pm" class="form-label">手続実施上の重要性</label>
+                    <label for="pm" class="form-label">手続実施上の重要性
+                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="手続実施上の重要性についての説明。金額を入力して、サンプリングの基準としてください。">？</button><span style="color: red;">⇐ここの内容を稲垣さんに決めてもらう</style></span>
+                    </label>
                     <input type="number" class="form-control" id="pm" name="pm" placeholder="金額を入力してください" required>
                 </div>
                 <div class="mb-3">
@@ -100,6 +102,20 @@
                         <option value="依拠する">依拠する</option>
                         <option value="依拠しない">依拠しない</option>
                     </select>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="customKeCheck" onchange="toggleDisabled()">
+                        <label class="form-check-label" for="customKeCheck">
+                            予想逸脱金額と優位水準を自分で設定する
+                        </label>
+                    </div>
+                    <label for="ke" class="form-label">予想逸脱金額</label>
+                    <input type="number" class="form-control" id="ke" name="ke" value="0" required disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="alpha" class="form-label">優位水準</label>
+                    <input type="number" class="form-control" id="alpha" name="alpha" value="0.05" step="0.01" required disabled>
                 </div>
                 <button type="submit" class="btn btn-primary">アップロード</button>
             </form>
@@ -210,6 +226,21 @@
             // モーダルを表示
             var modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
             modal.show();
+        });
+
+        //チェックボックスにチェックを入れると、disabledが外れるようにする関数
+        function toggleDisabled() {
+            var checkbox = document.getElementById('customKeCheck');
+            document.getElementById('ke').disabled = !checkbox.checked;
+            document.getElementById('alpha').disabled = !checkbox.checked;
+        }
+
+                //ポップアップボタン（ヘルプボタン）を機能させるためのBootStrap標準機能
+                document.addEventListener("DOMContentLoaded", function(){
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+            })
         });
     </script>
     <!-- bootstrap5.3 -->
