@@ -25,11 +25,20 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            監査サンプリングツール
+                            金額単位サンプリング
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{  url_for('sampling_xlsx_page')}}">xlsx版</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('sampling_csv_page') }}">csv版</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            属性サンプリング
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{  url_for('attribute_sampling_xlsx_page')}}">xlsx版</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('attribute_sampling_csv_page') }}">csv版</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -42,9 +51,13 @@
                 <h1>エラーが発生しました</h1>
                 <p>申し訳ございません。ファイルを正しく読み込むことができませんでした。</p>
                 <hr>
-                {% if xlsx_or_csv == 'xlsx' %}
+                {% if return_page == 'attribute_xlsx' %}
+                    <p><a class="btn btn-primary" href="{{ url_for('attribute_sampling_xlsx_page') }}">サンプリングツール画面に戻る</a></p>
+                {% elif return_page == 'attribute_csv' %}
+                    <p><a class="btn btn-primary" href="{{ url_for('attribute_sampling_csv_page') }}">サンプリングツール画面に戻る</a></p>
+                {% elif return_page == 'money_xlsx' %}
                     <p><a class="btn btn-primary" href="{{ url_for('sampling_xlsx_page') }}">サンプリングツール画面に戻る</a></p>
-                {% elif xlsx_or_csv == 'csv' %}
+                {% elif return_page == 'money_csv' %}
                     <p><a class="btn btn-primary" href="{{ url_for('sampling_csv_page') }}">サンプリングツール画面に戻る</a></p>
                 {% else %}
                     <p><a class="btn btn-primary" href="{{ url_for('home_page') }}">ホームに戻る</a></p>

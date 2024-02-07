@@ -17,7 +17,8 @@ import io
 # （属性サンプリングにおけるサンプル件数nの計算）
 # =========================================================================
 def sample_binom(pt, alpha, ke):
-    k = np.arange(10)
+    ke = int(ke)
+    k = np.arange(ke + 1)
     n = 1
     while True:
         bin_cdf = binom.cdf(k, n, pt)
@@ -32,12 +33,14 @@ def sample_binom(pt, alpha, ke):
 # =========================================================================
 def attribute_sampling(xlsx_or_csv, file, row_number, random_state,
                         pt, ke, alpha, sheet_name=None):
+    # xlsx
     if xlsx_or_csv == "xlsx":
         sample_data = pd.read_excel(
                                     file,
                                     sheet_name=sheet_name,
                                     header=row_number-1
                                     )
+    # csv
     else:
         sample_data = pd.read_csv(
                                     file,
@@ -46,7 +49,7 @@ def attribute_sampling(xlsx_or_csv, file, row_number, random_state,
                                     thousands=","
                                 )
 
-    n = sample_binom(pt, ke, alpha)
+    n = sample_binom(pt, alpha, ke)
     # サンプリングシートに記載用の、パラメータ一覧
     sampling_param = pd.DataFrame(
                                     [

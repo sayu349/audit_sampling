@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>監査サンプリングツール(csv版)</title>
+    <title>属性サンプリング(xlsx版)</title>
     <!-- favicon -->
     <link rel="icon" type="image/png" href="static/image/favicon.png">
     <!-- SheetJS xlsxモジュールの読み込み -->
@@ -26,12 +26,21 @@
                         <a class="nav-link" href="{{ url_for('home_page') }}">ホーム</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="page">
-                            監査サンプリングツール
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="page">
+                            金額単位サンプリング
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{  url_for('sampling_xlsx_page')}}">xlsx版</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('sampling_csv_page') }}">csv版</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            属性サンプリング
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{  url_for('attribute_sampling_xlsx_page')}}">xlsx版</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('attribute_sampling_csv_page') }}">csv版</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -42,11 +51,11 @@
         <div class="mb-5 border-bottom">
             <div class="row">
                 <div class="col-9">
-                    <h1>金額単位サンプリング（csv版）</h1>
+                    <h1>属性サンプリング（csv版）</h1>
                     <p>csvファイルをアップロードしてください<span class="text-danger">(※:UTF-8のみ対応)</span></p>
                 </div>
                 <div class="col-3">
-                    <a class="btn btn-primary" href="{{ url_for('sampling_xlsx_page') }}">xlsx版に移動する</a>
+                    <a class="btn btn-primary" href="{{ url_for('attribute_sampling_xlsx_page') }}">xlsx版に移動する</a>
                 </div>
             </div>
         </div>
@@ -65,57 +74,38 @@
                         <option value="#">csvファイルには、シート名が存在しません</option>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="rowNumberInput" class="form-label">ヘッダー行</label>
-                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
-                </div>
                 <div class="mb-5">
-                    <label for="columnNameSelectBox" class="form-label">金額単位サンプリングに用いる列</label>
-                    <select class="form-control" id="columnNameSelectBox" name="columnNameSelectBox" required>
-                        <option value="#">ヘッダー行を指定して、金額単位サンプリングに用いる列を選択してください</option>
-                    </select>
+                    <label for="rowNumberInput" class="form-label">ヘッダー行</label>
+                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" min="1" placeholder="要素名を含む行を選択(半角数字)" required>
                 </div>
                 <div class="mb-3 border-bottom">
                     <h3>サンプリング設定</h3>
                 </div>
                 <div class="mb-3">
-                    <label for="randomState" class="form-label">シード値</label>
-                    <input type="number" class="form-control" id="randomState" name="randomState" placeholder="シード値を入力してください" required>
-                </div>
-                <div class="mb-3">
-                    <label for="pm" class="form-label">手続実施上の重要性
-                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="手続実施上の重要性についての説明。金額を入力して、サンプリングの基準としてください。">？</button><span style="color: red;">⇐ここの内容を稲垣さんに決めてもらう</style></span>
+                    <label for="randomState" class="form-label">シード値
+                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="シード値" data-bs-content="再現性のある乱数を生成するための基準として、シード値を指定します。">？</button>
                     </label>
-                    <input type="number" class="form-control" id="pm" name="pm" placeholder="金額を入力してください" required>
+                    <input type="number" class="form-control" id="randomState" name="randomState" min="0" placeholder="シード値を入力してください" required>
                 </div>
                 <div class="mb-3">
-                    <label for="auditRisk" class="form-label">監査リスク</label>
-                    <select class="form-control" id="auditRisk" name="auditRisk" required>
-                        <option value="SR">SR</option>
-                        <option value="RMM-L">RMM-L</option>
-                        <option value="RMM-H">RMM-H</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="internalControl" class="form-label">内部統制</label>
-                    <select class="form-control" id="internalControl" name="internalControl" required>
-                        <option value="依拠する">依拠する</option>
-                        <option value="依拠しない">依拠しない</option>
-                    </select>
+                    <label for="pt" class="form-label">許容逸脱率の上限
+                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="手続実施上の重要性についての説明。0から1の間の値を入力して、サンプリングの基準としてください。">？</button><span style="color: red;">⇐ここの内容を稲垣さんに決めてもらう</style></span>
+                    </label>
+                    <input type="number" class="form-control" id="pt" name="pt" placeholder="0から1の間の値を入力してください" min="0" max="1" step="0.01" required>
                 </div>
                 <div class="mb-3">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="customKeCheck" onchange="toggleDisabled()">
                         <label class="form-check-label" for="customKeCheck">
-                            予想逸脱金額と優位水準を自分で設定する
+                            予想逸脱数と優位水準を自分で設定する
                         </label>
                     </div>
-                    <label for="ke" class="form-label">予想逸脱金額</label>
-                    <input type="number" class="form-control" id="ke" name="ke" value="0" required disabled>
+                    <label for="ke" class="form-label">予想逸脱数</label>
+                    <input type="number" class="form-control" id="ke" name="ke" value="0" min="0" required disabled>
                 </div>
                 <div class="mb-3">
                     <label for="alpha" class="form-label">優位水準</label>
-                    <input type="number" class="form-control" id="alpha" name="alpha" value="0.05" step="0.01" required disabled>
+                    <input type="number" class="form-control" id="alpha" name="alpha" value="0.05" step="0.01" min="0.01" required disabled>
                 </div>
                 <button type="submit" class="btn btn-primary">アップロード</button>
             </form>
@@ -164,54 +154,7 @@
         </div>
     </div>
     <script>
-        // csvデータをグローバル変数とする
-        var csvData;
-
-        // csvファイルの読み込み
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            var file = event.target.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                // csvデータ取得
-                var data = e.target.result;
-                var workbook = XLSX.read(data, {type: 'binary'});
-                var sheetName = workbook.SheetNames[0];
-                csvData = workbook.Sheets[sheetName];
-            };
-            reader.readAsText(file);
-
-            // ヘッダー行に0を入れる
-            rowNumberInput = document.getElementById('rowNumberInput')
-            rowNumberInput.value = 0;
-
-            // 金額単位サンプリングに用いる列のリセット
-            var columnNameSelectBox = document.getElementById('columnNameSelectBox');
-            columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
-            columnNameSelectBox.innerHTML = '<option value="#">ヘッダー行を指定して、金額単位サンプリングに用いる列を選択してください</option>'
-        });
-
-        document.getElementById('rowNumberInput').addEventListener('change', function(event) {
-            var inputValue = parseInt(event.target.value) - 1; // ヘッダー行を取得（1始まりを0始まりに変換）
-            // csv_dataが入力されているときのみ作動
-            if (csvData) {
-                // 任意の行情報取得
-                var headers = XLSX.utils.sheet_to_json(csvData, {header: 1})[inputValue];
-                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
-                columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
-
-                // カラム名をセレクトボックスとして表示する
-                var columnNameSelectBox = document.getElementById('columnNameSelectBox');
-                headers.forEach(function(header) {
-                    var option = document.createElement("option");
-                    option.value = header;
-                    option.textContent = header;
-                    columnNameSelectBox.appendChild(option);
-                });
-            }
-        });
-    </script>
-    <!-- bootstrap5.3 モーダル -->
-    <script>
+        // 既存のJavaScriptコード...
         // モーダルのアップロードボタンのイベントリスナー
         document.getElementById('confirmUpload').addEventListener('click', function() {
             // フォームのサブミットをトリガーする
@@ -230,13 +173,13 @@
 
         //チェックボックスにチェックを入れると、disabledが外れるようにする関数
         function toggleDisabled() {
-            var checkbox = document.getElementById('customKeCheck');
-            document.getElementById('ke').disabled = !checkbox.checked;
-            document.getElementById('alpha').disabled = !checkbox.checked;
-        }
+                    var checkbox = document.getElementById('customKeCheck');
+                    document.getElementById('ke').disabled = !checkbox.checked;
+                    document.getElementById('alpha').disabled = !checkbox.checked;
+                }
 
-                //ポップアップボタン（ヘルプボタン）を機能させるためのBootStrap標準機能
-                document.addEventListener("DOMContentLoaded", function(){
+        //ポップアップボタン（ヘルプボタン）を機能させるためのBootStrap標準機能
+        document.addEventListener("DOMContentLoaded", function(){
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
             var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl)

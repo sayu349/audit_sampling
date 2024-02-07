@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>監査サンプリングツール(xlsx版)</title>
+    <title>金額単位サンプリング(xlsx版)</title>
     <!-- favicon -->
     <link rel="icon" type="image/png" href="static/image/favicon.png">
     <!-- SheetJS xlsxモジュールの読み込み -->
@@ -27,11 +27,20 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="page">
-                            監査サンプリングツール
+                            金額単位サンプリング
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{  url_for('sampling_xlsx_page')}}">xlsx版</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('sampling_csv_page') }}">csv版</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            属性サンプリング
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{  url_for('attribute_sampling_xlsx_page')}}">xlsx版</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('attribute_sampling_csv_page') }}">csv版</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -67,7 +76,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="rowNumberInput" class="form-label">ヘッダー行</label>
-                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" placeholder="要素名を含む行を選択(半角数字)" required>
+                    <input type="number" class="form-control" id="rowNumberInput" name="rowNumberInput" min="1" placeholder="要素名を含む行を選択(半角数字)" required>
                 </div>
                 <div class="mb-5">
                     <label for="columnNameSelectBox" class="form-label">金額単位サンプリングに用いる列</label>
@@ -79,14 +88,16 @@
                     <h3>サンプリング設定</h3>
                 </div>
                 <div class="mb-3">
-                    <label for="randomState" class="form-label">シード値</label>
-                    <input type="number" class="form-control" id="randomState" name="randomState" placeholder="シード値を入力してください" required>
+                    <label for="randomState" class="form-label">シード値
+                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="シード値" data-bs-content="再現性のある乱数を生成するための基準として、シード値を指定します。">？</button>
+                    </label>
+                    <input type="number" class="form-control" id="randomState" name="randomState" min="0" placeholder="シード値を入力してください" required>
                 </div>
                 <div class="mb-3">
                     <label for="pm" class="form-label">手続実施上の重要性
                         <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="手続実施上の重要性についての説明。金額を入力して、サンプリングの基準としてください。">？</button><span style="color: red;">⇐ここの内容を稲垣さんに決めてもらう</style></span>
                     </label>
-                    <input type="number" class="form-control" id="pm" name="pm" placeholder="金額を入力してください" required>
+                    <input type="number" class="form-control" id="pm" name="pm" min="0" placeholder="金額を入力してください" required>
                 </div>
                 <div class="mb-3">
                     <label for="auditRisk" class="form-label">監査リスク</label>
@@ -112,11 +123,11 @@
                     </label>
                 </div>
                 <label for="ke" class="form-label">予想逸脱金額</label>
-                <input type="number" class="form-control" id="ke" name="ke" value="0" required disabled>
+                <input type="number" class="form-control" id="ke" name="ke" value="0" min="0" required disabled>
             </div>
             <div class="mb-3">
                 <label for="alpha" class="form-label">優位水準</label>
-                <input type="number" class="form-control" id="alpha" name="alpha" value="0.05" step="0.01" required disabled>
+                <input type="number" class="form-control" id="alpha" name="alpha" value="0.05" step="0.01" min="0.01" required disabled>
             </div>
                 <button type="submit" class="btn btn-primary">アップロード</button>
             </form>

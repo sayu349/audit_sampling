@@ -11,6 +11,10 @@ from flask import send_file
 # ============================================================
 # 監査サンプリング関数のインポート
 # ============================================================
+# 属性サンプリング関数
+from sampling_logic import attribute_sampling
+
+# 金額単位サンプリング
 from sampling_logic import audit_sampling
 
 
@@ -32,7 +36,7 @@ def home_page():
 # ============================================================
 # 属性サンプリング・xlsx版
 # ============================================================
-@app.route("/attribute_sampling_xlsx")
+@app.route("/attribute_sampling_xlsx", methods=["POST","GET"])
 def attribute_sampling_xlsx_page():
     # POST
     if request.method == "POST":
@@ -45,34 +49,97 @@ def attribute_sampling_xlsx_page():
         # シード値
         randomState = int(request.form["randomState"])
         # 許容逸脱率の上限
-        pt = int(request.form["pt"])
+        pt = float(request.form["pt"])
         # 予想逸脱金額と優位水準が任意してされた場合
         if "ke" in request.form and "alpha" in request.form:
-            ke = float(request.form["ke"])
+            ke = int(request.form["ke"])
             alpha = float(request.form["alpha"])
         # デフォルトの予想逸脱金額と優位水準を使う
         else:
             ke = 0
             alpha = 0.05
-        # 属性サンプリング関数実行
-        file_stream = attribute_sampling(
-                                        file = file,
-                                        sheet_name = sheetNameSelectBox,
-                                        xlsx_or_csv ="xlsx",
-                                        row_number = rowNumberInput,
-                                        random_state = randomState,
-                                        pt = pt,
-                                        ke = ke,
-                                        alpha = alpha)
+        try:
+            # 属性サンプリング関数実行
+            file_stream = attribute_sampling(
+                                            file = file,
+                                            sheet_name = sheetNameSelectBox,
+                                            xlsx_or_csv ="xlsx",
+                                            row_number = rowNumberInput,
+                                            random_state = randomState,
+                                            pt = pt,
+                                            ke = ke,
+                                            alpha = alpha)
+            # 成功した場合
+            return send_file(
+                            file_stream,
+                            download_name=f'{sheetNameSelectBox}サンプル.xlsx',
+                            as_attachment=True,
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+        except:
+            # 失敗した場合
+            return render_template("error.html", return_page ="attribute_xlsx")
     # GET
     else:
         return render_template("attribute_sampling_xlsx.html")
 
 
 # ============================================================
-# 金額単位サンプリング・xlsxの読み込み
+# 属性サンプリング・csv版
 # ============================================================
-@app.route("/sampling_xlsx", methods=["POST","GET"])
+@app.route("/attribute_sampling_csv", methods=["POST","GET"])
+def attribute_sampling_csv_page():
+    # POST
+    if request.method == "POST":
+        # xlsxファイル
+        file = request.files["fileInput"]
+        # ファイル名
+        fileName = file.filename
+        fileName = fileName.replace(".csv", "")
+        # ヘッダー行
+        rowNumberInput = int(request.form["rowNumberInput"])
+        # シード値
+        randomState = int(request.form["randomState"])
+        # 許容逸脱率の上限
+        pt = float(request.form["pt"])
+        # 予想逸脱金額と優位水準が任意してされた場合
+        if "ke" in request.form and "alpha" in request.form:
+            ke = int(request.form["ke"])
+            alpha = float(request.form["alpha"])
+        # デフォルトの予想逸脱金額と優位水準を使う
+        else:
+            ke = 0
+            alpha = 0.05
+
+        try:
+            # 属性サンプリング関数実行
+            file_stream = attribute_sampling(
+                                            file = file,
+                                            xlsx_or_csv ="csv",
+                                            row_number = rowNumberInput,
+                                            random_state = randomState,
+                                            pt = pt,
+                                            ke = ke,
+                                            alpha = alpha)
+            # 成功した場合
+            return send_file(
+                            file_stream,
+                            download_name=f'{fileName}サンプル.xlsx',
+                            as_attachment=True,
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            )
+        except:
+            # 失敗した場合
+            return render_template("error.html", return_page ="attribute_csv")
+    # GET
+    else:
+        return render_template("attribute_sampling_csv.html")
+
+
+# ============================================================
+# 金額単位サンプリング・xlsx版
+# ============================================================
+@app.route("/money_sampling_xlsx", methods=["POST","GET"])
 def sampling_xlsx_page():
     # POST
     if request.method == "POST":
@@ -126,16 +193,16 @@ def sampling_xlsx_page():
                             )
         except:
             # 失敗した場合
-            return render_template("error.html", xlsx_or_csv ="xlsx")
+            return render_template("error.html", return_page ="money_xlsx")
     # GET
     else:
-        return render_template("sampling_xlsx.html")
+        return render_template("money_sampling_xlsx.html")
 
 
 # ============================================================
-# 金額単位サンプリング・csvの読み込み
+# 金額単位サンプリング・csv版
 # ============================================================
-@app.route("/sampling_csv", methods=["POST","GET"])
+@app.route("/money_sampling_csv", methods=["POST","GET"])
 def sampling_csv_page():
     # POST
     if request.method == "POST":
@@ -187,10 +254,11 @@ def sampling_csv_page():
                             )
         except:
             # 失敗した場合
-            return render_template("error.html", xlsx_or_csv ="csv")
+            return render_template("error.html", xlsx_or_csv ="money_csv")
     # GET
     else:
-        return render_template("sampling_csv.html")
+        return render_template("money_sampling_csv.html")
+
 
 # ============================================================
 # エラーハンドリング
@@ -210,10 +278,5 @@ def error_404(error): # errorは消さない！
 # ============================================================
 # 実行
 # ============================================================
-"""
-if __name__== '__main__':
-    app.run(debug=True, host="192.168.0.81", port=80)
-"""
-
 if __name__== '__main__':
     app.run(debug=True)
