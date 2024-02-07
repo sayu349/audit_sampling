@@ -110,27 +110,22 @@ def attribute_sampling_csv_page():
         else:
             ke = 0
             alpha = 0.05
-
-        try:
-            # 属性サンプリング関数実行
-            file_stream = attribute_sampling(
-                                            file = file,
-                                            xlsx_or_csv ="csv",
-                                            row_number = rowNumberInput,
-                                            random_state = randomState,
-                                            pt = pt,
-                                            ke = ke,
-                                            alpha = alpha)
-            # 成功した場合
-            return send_file(
-                            file_stream,
-                            download_name=f'{fileName}サンプル.xlsx',
-                            as_attachment=True,
-                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                            )
-        except:
-            # 失敗した場合
-            return render_template("error.html", return_page ="attribute_csv")
+        # 属性サンプリング関数実行
+        file_stream = attribute_sampling(
+                                        file = file,
+                                        xlsx_or_csv ="csv",
+                                        row_number = rowNumberInput,
+                                        random_state = randomState,
+                                        pt = pt,
+                                        ke = ke,
+                                        alpha = alpha)
+        # 成功した場合
+        return send_file(
+                        file_stream,
+                        download_name=f'{fileName}サンプル.xlsx',
+                        as_attachment=True,
+                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        )
     # GET
     else:
         return render_template("attribute_sampling_csv.html")
