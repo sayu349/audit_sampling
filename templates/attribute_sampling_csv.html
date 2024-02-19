@@ -89,7 +89,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="pt" class="form-label">許容逸脱率の上限
-                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="手続実施上の重要性についての説明。0から1の間の値を入力して、サンプリングの基準としてください。">？</button><span style="color: red;">⇐ここの内容を稲垣さんに決めてもらう</style></span>
+                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="0から1の間の値を入力してください。">？</button>
                     </label>
                     <input type="number" class="form-control" id="pt" name="pt" placeholder="0から1の間の値を入力してください" min="0" max="1" step="0.01" required>
                 </div>
@@ -97,11 +97,11 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="customKeCheck" onchange="toggleDisabled()">
                         <label class="form-check-label" for="customKeCheck">
-                            予想逸脱数と優位水準を自分で設定する
+                            予想逸脱数と優位水準を自分で設定する<button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="予想逸脱率と優位水準" data-bs-content=" 指定しない場合「予想逸脱率=0、優位水準=0.05」とする">？</button>
                         </label>
                     </div>
-                    <label for="ke" class="form-label">予想逸脱数</label>
-                    <input type="number" class="form-control" id="ke" name="ke" value="0" min="0" required disabled>
+                    <label for="pe" class="form-label">予想逸脱率</label>
+                    <input type="number" class="form-control" id="pe" name="pe" value="0" step="0.01" min="0" required disabled>
                 </div>
                 <div class="mb-3">
                     <label for="alpha" class="form-label">優位水準</label>
@@ -174,7 +174,7 @@
         //チェックボックスにチェックを入れると、disabledが外れるようにする関数
         function toggleDisabled() {
                     var checkbox = document.getElementById('customKeCheck');
-                    document.getElementById('ke').disabled = !checkbox.checked;
+                    document.getElementById('pe').disabled = !checkbox.checked;
                     document.getElementById('alpha').disabled = !checkbox.checked;
                 }
 

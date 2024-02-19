@@ -95,7 +95,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="pm" class="form-label">手続実施上の重要性
-                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="手続実施上の重要性についての説明。金額を入力して、サンプリングの基準としてください。">？</button><span style="color: red;">⇐ここの内容を稲垣さんに決めてもらう</style></span>
+                        <button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="手続実施上の重要性" data-bs-content="0以上の金額を入力してください。">？</button></span>
                     </label>
                     <input type="number" class="form-control" id="pm" name="pm" placeholder="金額を入力してください" min="0" required>
                 </div>
@@ -118,7 +118,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="customKeCheck" onchange="toggleDisabled()">
                         <label class="form-check-label" for="customKeCheck">
-                            予想逸脱金額と優位水準を自分で設定する
+                            予想逸脱金額と優位水準を自分で設定する<button type="button" class="text-secondary btn btn-sm rounded-circle border border-2" data-bs-toggle="popover" title="予想逸脱率と優位水準" data-bs-content=" 指定しない場合「予想逸脱率=0、優位水準=0.05」とする">？</button>
                         </label>
                     </div>
                     <label for="ke" class="form-label">予想逸脱金額</label>

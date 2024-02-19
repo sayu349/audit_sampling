@@ -32,7 +32,7 @@ def sample_binom(pt, alpha, ke):
 # 属性サンプリング結果出力
 # =========================================================================
 def attribute_sampling(xlsx_or_csv, file, row_number, random_state,
-                        pt, ke, alpha, sheet_name=None):
+                        pt, pe, alpha, sheet_name=None):
     # xlsx
     if xlsx_or_csv == "xlsx":
         sample_data = pd.read_excel(
@@ -49,6 +49,8 @@ def attribute_sampling(xlsx_or_csv, file, row_number, random_state,
                                     thousands=","
                                 )
 
+    N = len(sample_data)
+    ke = math.ceil(N * pe)
     n = sample_binom(pt, alpha, ke)
     # サンプリングシートに記載用の、パラメータ一覧
     sampling_param = pd.DataFrame(

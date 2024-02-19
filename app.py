@@ -51,12 +51,12 @@ def attribute_sampling_xlsx_page():
         # 許容逸脱率の上限
         pt = float(request.form["pt"])
         # 予想逸脱金額と優位水準が任意してされた場合
-        if "ke" in request.form and "alpha" in request.form:
-            ke = int(request.form["ke"])
+        if "pe" in request.form and "alpha" in request.form:
+            pe = float(request.form["pe"])
             alpha = float(request.form["alpha"])
         # デフォルトの予想逸脱金額と優位水準を使う
         else:
-            ke = 0
+            pe = 0
             alpha = 0.05
         try:
             # 属性サンプリング関数実行
@@ -67,7 +67,7 @@ def attribute_sampling_xlsx_page():
                                             row_number = rowNumberInput,
                                             random_state = randomState,
                                             pt = pt,
-                                            ke = ke,
+                                            pe = pe,
                                             alpha = alpha)
             # 成功した場合
             return send_file(
@@ -103,12 +103,12 @@ def attribute_sampling_csv_page():
         # 許容逸脱率の上限
         pt = float(request.form["pt"])
         # 予想逸脱金額と優位水準が任意してされた場合
-        if "ke" in request.form and "alpha" in request.form:
-            ke = int(request.form["ke"])
+        if "pe" in request.form and "alpha" in request.form:
+            pe = float(request.form["pe"])
             alpha = float(request.form["alpha"])
         # デフォルトの予想逸脱金額と優位水準を使う
         else:
-            ke = 0
+            pe = 0
             alpha = 0.05
 
         try:
@@ -119,7 +119,7 @@ def attribute_sampling_csv_page():
                                             row_number = rowNumberInput,
                                             random_state = randomState,
                                             pt = pt,
-                                            ke = ke,
+                                            pe = pe,
                                             alpha = alpha)
             # 成功した場合
             return send_file(
@@ -168,32 +168,28 @@ def sampling_xlsx_page():
         else:
             ke = 0
             alpha = 0.05
+        # 属性サンプリング関数実行
+        file_stream = audit_sampling(
+                                    file= file,
+                                    sheet_name= sheetNameSelectBox,
+                                    xlsx_or_csv = "xlsx",
+                                    amount_column_name = columnNameSelectBox,
+                                    row_number = rowNumberInput,
+                                    random_state=randomState,
+                                    pm = pm,
+                                    audit_risk = auditRisk,
+                                    ke = ke,
+                                    alpha = alpha,
+                                    internal_control= internalControl
+                                    )
+        # 成功した場合
+        return send_file(
+                        file_stream,
+                        download_name=f'{sheetNameSelectBox}サンプル.xlsx',
+                        as_attachment=True,
+                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        )
 
-        try:
-            # 属性サンプリング関数実行
-            file_stream = audit_sampling(
-                                        file= file,
-                                        sheet_name= sheetNameSelectBox,
-                                        xlsx_or_csv = "xlsx",
-                                        amount_column_name = columnNameSelectBox,
-                                        row_number = rowNumberInput,
-                                        random_state=randomState,
-                                        pm = pm,
-                                        audit_risk = auditRisk,
-                                        ke = ke,
-                                        alpha = alpha,
-                                        internal_control= internalControl
-                                        )
-            # 成功した場合
-            return send_file(
-                            file_stream,
-                            download_name=f'{sheetNameSelectBox}サンプル.xlsx',
-                            as_attachment=True,
-                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                            )
-        except:
-            # 失敗した場合
-            return render_template("error.html", return_page ="money_xlsx")
     # GET
     else:
         return render_template("money_sampling_xlsx.html")
