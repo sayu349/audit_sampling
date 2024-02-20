@@ -161,44 +161,39 @@
         // ファイル入力時に、発火される関数
         // シート名取得 script
         document.getElementById('fileInput').addEventListener('change', function(event) {
-            // セレクトボックスを一度空にする処理
+            // セレクトボックスを一度空にする
             var selectBox = document.getElementById('sheetNameSelectBox');
-            selectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+            selectBox.innerHTML = ''; // シート名選択のオプションをクリア
 
-            // event.target.filesはユーザーが選択したファイルのリスト
-            var file = event.target.files[0]; // 最初のファイルを取得
-            var reader = new FileReader(); // FileReaderのインスタンスを作成
+            // ファイル処理
+            var file = event.target.files[0];
+            var reader = new FileReader();
 
-            // ファイルの読み込みが完了した場合の動作
             reader.onload = function(e) {
-                var data = e.target.result; // 読み込まれたファイルの内容
+                var data = e.target.result;
 
                 // SheetJSを使用してワークブックを読み込み
                 workbook = XLSX.read(data, {type: 'binary'});
 
-                // シート名の取得
+                // シート名の取得とセレクトボックスへの追加
                 var sheetNames = workbook.SheetNames; // 全シート名を取得
-
-                // シート名をセレクトボックスに表示
-                var sheetNameSelectBox = document.getElementById('sheetNameSelectBox');
-                // for文でSheetNameを一つずつセレクトボックスに追加する
                 sheetNames.forEach(function(sheetName) {
-                    var option = document.createElement('option'); // オプション要素を作成
-                    option.value = sheetName; // オプションの値を設定
-                    option.textContent = sheetName; // オプションのテキストを設定
-                    sheetNameSelectBox.appendChild(option); // セレクトボックスにオプションを追加
+                    var option = document.createElement('option');
+                    option.value = sheetName;
+                    option.textContent = sheetName;
+                    selectBox.appendChild(option); // ここでappendChildを使用
+                });
 
-                // ヘッダー行に0を入れる
-                rowNumberInput = document.getElementById('rowNumberInput')
+                // ヘッダー行の初期設定
+                var rowNumberInput = document.getElementById('rowNumberInput');
                 rowNumberInput.value = 0;
 
-                // 金額単位サンプリングに用いる列のリセット
+                // 金額単位サンプリング用列のリセット
                 var columnNameSelectBox = document.getElementById('columnNameSelectBox');
-                columnNameSelectBox.innerHTML = ''; // セレクトボックス内のオプションをクリア
+                columnNameSelectBox.innerHTML = '';
                 columnNameSelectBox.innerHTML = '<option value="#">ヘッダー行を指定して、金額単位サンプリングに用いる列を選択してください</option>'
-                });
             };
-            reader.readAsBinaryString(file); // FileReaderでファイルを読み込む
+            reader.readAsBinaryString(file);
         });
 
         // 既存のJavaScriptコード...
